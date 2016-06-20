@@ -18,7 +18,8 @@ HEADERS += librenet.h \
     include/librenet.h \
     include/netdev_controller.h \
     include/macros.h \
-    include/ipv4_address.h
+    include/ipv4_address.h \
+    include/mac_address.h
 unix {
     target.path = /usr/lib
     INSTALLS += target

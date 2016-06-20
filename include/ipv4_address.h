@@ -26,7 +26,6 @@
 #else
 #endif
 
-#include <hash>
 #include "macros.h"
 
 #ifndef RENET_IPV4_ADDRESS_H
@@ -47,7 +46,8 @@ namespace Renet{
 
     private:
         uint32_t ipAddr;
-        uint32_t strToAddr(const char*);
+        uint32_t strToAddr(const char* _ip);
+        bool addrToStr(char* _outStr);
 
     public:
         static const size_t szAddr = sizeof(uint_32);
@@ -57,9 +57,9 @@ namespace Renet{
         static const uint32_t ipAllGroup = 0xe0000000;
 
         explict IPv4Address(uint32_t);
-        IPv4Address(const std::string&);
-        IPv4Address(const char*);
-        IPv4Address(const IPv4Address&);
+        IPv4Address(const std::string& _ip);
+        IPv4Address(const char* _ip);
+        IPv4Address(const IPv4Address& _ip);
 
         operator uint32_t() const;
         operator=(const IPv4Address& _ip);
@@ -70,9 +70,9 @@ namespace Renet{
 
         bool isAddrType(IPv4Type _type);
         IPv4Type getAddrType();
-        getAddrString(char* _outstr);
+        getAddrString(char* _outStr);
 
-        static convertAddrString(char* _outstr, const IPv4Address& _ip);
+        //static convertAddrString(char* _outstr, const IPv4Address& _ip);
     };
 }
 
