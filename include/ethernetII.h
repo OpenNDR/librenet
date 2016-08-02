@@ -2,7 +2,7 @@
 #define RENET_ETHERNETII_H
 
 #include "protocol.h"
-#include "mac_address.h"
+#include "hw_address.h"
 
 namespace Renet{
     class EthernetII : Protocol{

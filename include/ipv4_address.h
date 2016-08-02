@@ -27,6 +27,8 @@
 #endif
 
 #include "macros.h"
+#include <cstdint>
+#include <string>
 
 #ifndef RENET_IPV4_ADDRESS_H
 #define RENET_IPV4_ADDRESS_H
@@ -50,13 +52,13 @@ namespace Renet{
         bool addrToStr(char* _outStr);
 
     public:
-        static const size_t szAddr = sizeof(uint_32);
+        static const size_t szAddr = sizeof(uint32_t);
         static const uint32_t ipAny = 0x00000000;
         static const uint32_t ipLoopback = 0x7f000001;
         static const uint32_t ipBroadcast = 0xffffffff;
         static const uint32_t ipAllGroup = 0xe0000000;
 
-        explict IPv4Address(uint32_t);
+        explicit IPv4Address(uint32_t);
         IPv4Address(const std::string& _ip);
         IPv4Address(const char* _ip);
         IPv4Address(const IPv4Address& _ip);
