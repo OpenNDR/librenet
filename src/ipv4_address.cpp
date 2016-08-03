@@ -31,14 +31,32 @@
 
 using namespace Renet;
 
-IPv4Address::IPv4Address(uint32_t _ip){
+IPv4Address::IPv4Address(uint32_t _ip):ipAddr(_ip){}
+IPv4Address::IPv4Address(const std::string& _ip){
+    IPv4Address(_ip.c_str());
+}
+IPv4Address::IPv4Address(const char *_ip){
+    (_ip&&_ip!=nullptr) ? strToAddr(_ip, ipAddr) : throw std::runtime_error("Invalid pointer access");
+}
+IPv4Address::IPv4Address(const IPv4Address& _ip) : ipAddr(_ip.data()){}
 
+std::string IPv4Address::to_string() const{
+    return addrToStr(*this);
+}
+uint32_t IPv4Address::data(){
+    return ipAddr;
 }
 
-IPv4Address::IPv4Address(std::string& _ip){
-
+IPv4Address& IPv4Address::operator=(uint32_t _rhs){
+    ipAddr = _rhs;
 }
-
-IPv4Address::IPv4Address(const IPv4Address &_ip){
-
+IPv4Address& IPv4Address::operator=(const std::string& _rhs){
+    *this = _rhs.c_str();
 }
+IPv4Address& IPv4Address::operator=(const char* _rhs){
+    (_rhs&&_rhs!=nullptr) ? strToAddr(_rhs, ipAddr) : throw std::runtime_error("Invalid pointer access");
+}
+IPv4Address& IPv4Address::operator=(const IPv4Address& _rhs){
+    ipAddr = _rhs.data();
+}
+bool IPv4Address::operator ==(const IPv4Address& _rhs){}

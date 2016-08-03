@@ -81,32 +81,84 @@ namespace Renet{
         const_iterator end() const{
             return hwAddr + szAddr;
         }
+
         size_t len() const{
             return szAddr;
         }
         size_t size() const{
             return szAddr;
         }
+
         std::string to_string() const{
             return addrToString(*this);
         }
+        const typeData* c_ptr() const{
+            return hwAddr;
+        }
+        const typeData* data() const{
+            return hwAddr;
+        }
+        template<typename Iterator>
+        Iterator copy(Iterator _target) const{
+           for(typeData i : hwAddr)
+               *_target++ = i;
+           return _target;
+        }
 
         //Operator overloading
+        HWAddress<szT>& operator=(const typeData (&_rhs)[szT]){
+            (_rhs&&_rhs!=nullptr) ? std::copy(_rhs, _rhs + szT, hwAddr) : throw std::runtime_error("Invalid pointer access");
+             return *this;
+        }
+        HWAddress<szT>& operator=(const std::string& _rhs){
+            *this = _rhs.c_str();
+             return *this;
+        }
+        HWAddress<szT>& operator=(const char* _rhs){
+            (_rhs&&_rhs!=nullptr) ? strToAddr(_rhs, hwAddr) : throw std::runtime_error("Invalid pointer access");
+            return *this;
+        }
         HWAddress<szT>& operator=(const HWAddress<szT>& _rhs){
             std::copy(_rhs.begin(), _rhs.end(), hwAddr);
             return *this;
         }
+
         typeData operator[](size_t i) const{
             return begin()[i];
         }
         typeData& operator[](size_t i){
             return begin()[i];
         }
+
         bool operator==(const HWAddress& _rhs) const{
             return std::equal(begin(), end(), _rhs.begin());
         }
+        bool operator==(const std::string& _rhs) const{
+            return *this == _rhs.c_str();
+        }
+        bool operator==(const char* _rhs) const{
+            typeData arrTmp[szT];
+            strToAddr(_rhs, arrTmp);
+            return std::equal(begin(), end(), arrTmp);
+        }
+
         bool operator!=(const HWAddress& _rhs) const{
             return !(*this == _rhs);
+        }
+        bool operator!=(const std::string& _rhs) const{
+            return !(*this == _rhs);
+        }
+
+        HWAddress<szT> operator&(const std::string& _rhs) const{
+            return *this & _rhs.c_str();
+        }
+        HWAddress<szT> operator&(const char* _rhs) const{
+            HWAddress<szT> varAddr = *this;
+            typeData arrTmp[szT];
+            strToAddr(_rhs, arrTmp);
+            for(size_t i = 0; i < szT; ++i)
+                varAddr[i] &= arrTmp[i];
+            return varAddr;
         }
         HWAddress<szT> operator&(const HWAddress<szT>& _rhs) const{
             HWAddress<szT> varAddr = *this;
@@ -114,10 +166,23 @@ namespace Renet{
                 varAddr[i] &= _rhs[i];
             return varAddr;
         }//HWAddress Masking (& Operation)
-        void operator&=(const HWAddress<szT>& _rhs){
+
+        HWAddress<szT>& operator&=(const std::string& _rhs) {
+            return *this &= _rhs.c_str();
+        }
+        HWAddress<szT>& operator&=(const char* _rhs){
+            typeData arrTmp[szT];
+            strToAddr(_rhs, arrTmp);
+            for(size_t i = 0; i < szT; ++i)
+                hwAddr[i] &= arrTmp[i];
+            return *this;
+        }
+        HWAddress<szT>& operator&=(const HWAddress<szT>& _rhs){
             for(size_t i = 0; i < szT; ++i)
                 hwAddr[i] &= _rhs[i];
+            return *this;
         }//HWAddress Masking (&= Operation)
+
         RENET_API friend std::ostream& operator<<(std::ostream& _output, const HWAddress& _hw){
             return _output << addrToString(_hw);
         }
@@ -132,18 +197,12 @@ namespace Renet{
         bool isAddrType(HWType _type) const{
             return getAddrType() == _type;
         }
-        template<typename Iterator>
-        Iterator copy(Iterator _target) const{
-           for(typeData i : hwAddr)
-               *_target++ = i;
-           return _target;
-        }
 
     private:
         typeData hwAddr[szT];
         static const size_t szAddr = szT;
 
-        inline void strToAddr(std::string _hw, typeData (&_addr)[szT]){
+        inline void strToAddr(std::string _hw, typeData (&_addr)[szT]) const{
             const char* str = _hw.c_str();
             int cnt = 0;
 
