@@ -14,4 +14,4 @@ addons:
       - cmake
 
 script:
-    - ./build.sh
+    - bash ./build.sh
