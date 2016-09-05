@@ -1,0 +1,37 @@
+language: cpp
+os: 
+  - linux
+  - osx
+
+dist: trusty
+sudo: false
+
+matrix:
+  include:
+    - compiler: gcc
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++
+            - cmake
+          env: COMPILER=g++
+
+    - compiler: clang
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-
+            - cmake
+          env: COMPILER=clang++
+
+script:
+  - mkdir build && cd build
+  - cmake .. -DCMAKE_CXX_COMPILER=$COMPILER
+  - make
+  - cd .. 
+  - rm -r ./build
+
