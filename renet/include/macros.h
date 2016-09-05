@@ -37,17 +37,19 @@
     #ifdef _MSC_VER
         #define RENET_DEBUG
         #define RENET_SECTION(name)
-        #define RENET_ALIGN(size)
-        #define RENET_PACK
-        #define RENET_DEPRECATED(func)
-        #define RENET_LFUNC
-        #define RENET_NOEXCEPT
+        #define RENET_ALIGN(size) __declspec(align (size))
+        #define RENET_PACK_DEF __pragma(pack(push, 1))
+		#define RENET_PACK __pragma(pack(pop))
+        #define RENET_DEPRECATED(func) func __declspec(deprecated)
+        #define RENET_LFUNC inline
+        #define RENET_NOEXCEPT noexcept
         #define RENET_EXPECT_T(x)
         #define RENET_EXPECT_F(x)
     #else
         #define RENET_DEBUG __attribute__ ((unused))
         #define RENET_SECTION(name) __attribute__ ((section (name)))
         #define RENET_ALIGN(size) __attribute__ ((aligned (size)))
+		#define RENET_PACK_DEF
         #define RENET_PACK __attribute__ ((packed))
         #define RENET_DEPRECATED(func) func __attribute__ ((deprecated))
         #define RENET_LFUNC inline
