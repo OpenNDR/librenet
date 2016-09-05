@@ -1,4 +1,5 @@
 language: cpp
+dist: trusty
 
 os: 
   - linux
@@ -14,4 +15,8 @@ addons:
       - cmake
 
 script:
-    - bash ./build.sh
+    - mkdir build && cd build
+    - cmake ..
+    - make
+    - cd .. && rm -r ./build
+
