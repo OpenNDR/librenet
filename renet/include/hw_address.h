@@ -21,6 +21,9 @@
  * SOFTWARE.
 */
 
+#ifndef RENET_HW_ADDRESS_H
+#define RENET_HW_ADDRESS_H
+
 //System Headers
 #ifndef __WIN32
     #include <unistd.h>
@@ -36,9 +39,6 @@
 #include <stdexcept>
 #include <sstream>
 #include <iterator>
-
-#ifndef RENET_HW_ADDRESS_H
-#define RENET_HW_ADDRESS_H
 
 namespace Renet{
     template <size_t szT, typename typeData = uint8_t>
@@ -96,6 +96,9 @@ namespace Renet{
             return hwAddr;
         }
         const typeData* data() const{
+            return hwAddr;
+        }
+        typeData* data(){
             return hwAddr;
         }
         template<typename Iterator>
@@ -186,6 +189,12 @@ namespace Renet{
         RENET_API friend std::ostream& operator<<(std::ostream& _output, const HWAddress& _hw){
             return _output << addrToString(_hw);
         }
+        RENET_API friend std::istream& operator>>(std::istream& _input, HWAddress& _hw){
+            std::string strTmp;
+            _input >> strTmp;
+            strToAddr(strTmp, *reinterpret_cast<typeData (*)[szT]>(_hw.data()));
+            return _input;
+        }
 
         HWType getAddrType() const{
             if(*this==broadcast)
@@ -202,7 +211,7 @@ namespace Renet{
         typeData hwAddr[szT];
         static const size_t szAddr = szT;
 
-        inline void strToAddr(std::string _hw, typeData (&_addr)[szT]) const{
+        static void strToAddr(std::string _hw, typeData (&_addr)[szT]){
             const char* str = _hw.c_str();
             int cnt = 0;
 

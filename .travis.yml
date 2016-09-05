@@ -1,0 +1,17 @@
+language: cpp
+
+os: 
+  - linux
+  - osx
+
+compiler:
+  - g++
+  - clang++
+
+addons:
+  apt:
+    packages:
+      - cmake
+
+script:
+    - bash ./build.sh
